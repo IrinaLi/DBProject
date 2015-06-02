@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8FF09328-4DAC-4FC6-8DE3-2173B71375F6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ConsoleApplication3</RootNamespace>
+    <RootNamespace>DBProject</RootNamespace>
     <ProjectName>DBProject</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
