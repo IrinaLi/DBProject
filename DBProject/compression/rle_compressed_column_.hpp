@@ -146,18 +146,54 @@ private:
 				// check if compressed element contains one value
 				if(index == start_index && index == end_index)
 				{
-					// check that compressed column doesn't end or start with current element  
-					if(i != 0 && i != val_vector.size() - 1) 
+					if (index == 0)
 					{
-						//if new value is equal to previous and next element, merge three elements into one
+						if(val_vector[index+1].second == value)
+						{
+							val_vector[index+1].first++;
+							val_vector.erase(val_vector.begin());
+						}
+						else
+						{
+							val_vector[index].second = value;
+						}
+						break;
+					}
+					if (index == val_vector.size()-1)
+					{ 
+						if(val_vector[index-1].second == value)
+						{
+							val_vector[index-1].first++;
+							val_vector.erase(val_vector.end() - 1);
+						}
+						else
+						{
+							val_vector[index].second = value;
+						}
+						break;
+					}
+
+					//if new value is equal to previous and next element, merge three elements into one
 						if (val_vector[i-1].second == value && val_vector[i+1].second == value)
 						{
 							val_vector[i-1].first += val_vector[i+1].first + 1;
 							val_vector.erase(val_vector.begin() + i);
-							val_vector.erase(val_vector.begin() + (i+1));
+							val_vector.erase(val_vector.begin() + i); //irli потому что поменяются значения индексов после первого удаления
 							break;
 						}
-					}
+
+						if (val_vector[i-1].second == value)
+						{
+							val_vector[i-1].first++;
+							val_vector.erase(val_vector.begin() + i);
+							break;
+						}
+						if (val_vector[i+1].second == value)
+						{
+							val_vector[i+1].first++;
+							val_vector.erase(val_vector.begin() + i);
+							break;
+						}
 				}
 				if (index == start_index)
 				{
@@ -166,18 +202,14 @@ private:
 					if(i != 0 && val_vector[i-1].second == value)
 					{
 						val_vector[i-1].first++;
-						if (val_vector[i].first > 1)
-						{
-							val_vector[i].first--;
-						}
-						else 
-						{
-							val_vector.erase(val_vector.begin() + i);
-						}
+						val_vector[i].first--;
 					}
 					else 
 					{
-						if (val_vector[i].first == 1)
+						val_vector.insert(val_vector.begin()+i+1, std::make_pair(1, value));		
+						val_vector[i].first--;
+
+						/*if (val_vector[i].first == 1)
 						{
 							val_vector[i].second = value;
 						}
@@ -185,7 +217,7 @@ private:
 						{
 							val_vector.insert(val_vector.begin() + i, std::make_pair(1, value));
 							val_vector[i+1].first--;
-						}
+						}*/
 					}
 					break;
 				}
@@ -194,18 +226,12 @@ private:
 					if(i != val_vector.size()-1 && val_vector[i+1].second == value)
 					{
 						val_vector[i+1].first++;
-						if(val_vector[i].first > 1)
-						{
-							val_vector[i].first--;
-						}
-						else 
-						{								
-							val_vector.erase(val_vector.begin() + i);
-						}
+						val_vector[i].first--;
 					}
 					else 
 					{
-
+						val_vector.insert(val_vector.begin()+i+1, std::make_pair(1, value));		
+						val_vector[i].first--;
 						/*if (val_vector[i].first == 1)
 						{
 							val_vector[i].second = value;
