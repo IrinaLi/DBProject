@@ -80,6 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="compression\dictionary_compressed_column.hpp" />
+    <ClInclude Include="compression\rle_compressed_column_.hpp" />
     <ClInclude Include="core\base_column.hpp" />
     <ClInclude Include="core\column.hpp" />
     <ClInclude Include="core\column_base_typed.hpp" />

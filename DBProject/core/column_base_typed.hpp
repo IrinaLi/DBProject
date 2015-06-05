@@ -114,7 +114,7 @@ template<class T>
 const PositionListPtr ColumnBaseTyped<T>::sort(SortOrder order){
 
 	PositionListPtr ids = PositionListPtr( new PositionList());
-		std::vector<std::pair<T,TID> > v;
+		std::vector<std::pair<T,TID>> v;
 
 		for(unsigned int i=0;i<this->size();i++){
 			v.push_back (std::pair<T,TID>((*this)[i],i) );
@@ -199,7 +199,7 @@ const PositionListPtr ColumnBaseTyped<T>::selection(const boost::any& value_for_
 	template<class T>
 	const PositionListPairPtr ColumnBaseTyped<T>::hash_join(ColumnPtr join_column_){
 
-		typedef boost::unordered_multimap<T,TID,boost::hash<T>, std::equal_to<T> > HashTable;
+		typedef boost::unordered_multimap < T, TID, boost::hash<T>, std::equal_to<T> > HashTable;
 
 				if(join_column_->type()!=typeid(T)){
 					std::cout << "Fatal Error!!! Typemismatch for columns " << this->name_  << " and " << join_column_->getName() << std::endl;

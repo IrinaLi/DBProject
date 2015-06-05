@@ -39,6 +39,9 @@
     <ClInclude Include="doc\documentation.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="compression\rle_compressed_column_.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\int column" />
