@@ -48,6 +48,8 @@ class RLECompressedColumn : public CompressedColumn<T>{
 	
 	virtual T& operator[](const int index);
 
+	bool testCompression();
+
 private:
 
 	std::vector< std::pair<int,T> > val_vector;
@@ -146,54 +148,57 @@ private:
 				// check if compressed element contains one value
 				if(index == start_index && index == end_index)
 				{
-					if (index == 0)
+					if (i == 0)
 					{
-						if(val_vector[index+1].second == value)
+						if(val_vector[i+1].second == value)
 						{
-							val_vector[index+1].first++;
+							val_vector[i+1].first++;
 							val_vector.erase(val_vector.begin());
 						}
 						else
 						{
-							val_vector[index].second = value;
+							val_vector[i].second = value;
 						}
 						break;
 					}
-					if (index == val_vector.size()-1)
+					if (i == val_vector.size() - 1)
 					{ 
-						if(val_vector[index-1].second == value)
+						if(val_vector[i-1].second == value)
 						{
-							val_vector[index-1].first++;
+							val_vector[i-1].first++;
 							val_vector.erase(val_vector.end() - 1);
 						}
 						else
 						{
-							val_vector[index].second = value;
+							val_vector[i].second = value;
 						}
 						break;
 					}
 
 					//if new value is equal to previous and next element, merge three elements into one
-						if (val_vector[i-1].second == value && val_vector[i+1].second == value)
-						{
-							val_vector[i-1].first += val_vector[i+1].first + 1;
-							val_vector.erase(val_vector.begin() + i);
-							val_vector.erase(val_vector.begin() + i); //irli потому что поменяются значения индексов после первого удаления
-							break;
-						}
+					if (val_vector[i-1].second == value && val_vector[i+1].second == value)
+					{
+						val_vector[i-1].first += val_vector[i+1].first + 1;
+						val_vector.erase(val_vector.begin() + i);
+						val_vector.erase(val_vector.begin() + i); //irli потому что поменяются значения индексов после первого удаления
+						break;
+					}
 
-						if (val_vector[i-1].second == value)
-						{
-							val_vector[i-1].first++;
-							val_vector.erase(val_vector.begin() + i);
-							break;
-						}
-						if (val_vector[i+1].second == value)
-						{
-							val_vector[i+1].first++;
-							val_vector.erase(val_vector.begin() + i);
-							break;
-						}
+					if (val_vector[i-1].second == value)
+					{
+						val_vector[i-1].first++;
+						val_vector.erase(val_vector.begin() + i);
+						break;
+					}
+					if (val_vector[i+1].second == value)
+					{
+						val_vector[i+1].first++;
+						val_vector.erase(val_vector.begin() + i);
+						break;
+					}
+
+					val_vector[i].second = value;
+					break;
 				}
 				if (index == start_index)
 				{
@@ -208,16 +213,6 @@ private:
 					{
 						val_vector.insert(val_vector.begin()+i+1, std::make_pair(1, value));		
 						val_vector[i].first--;
-
-						/*if (val_vector[i].first == 1)
-						{
-							val_vector[i].second = value;
-						}
-						else 
-						{
-							val_vector.insert(val_vector.begin() + i, std::make_pair(1, value));
-							val_vector[i+1].first--;
-						}*/
 					}
 					break;
 				}
@@ -232,15 +227,6 @@ private:
 					{
 						val_vector.insert(val_vector.begin()+i+1, std::make_pair(1, value));		
 						val_vector[i].first--;
-						/*if (val_vector[i].first == 1)
-						{
-							val_vector[i].second = value;
-						}
-						else
-						{
-							val_vector.insert(val_vector.begin()+i+1, std::make_pair(1, value));
-							val_vector[i].first--;
-						}*/
 					}
 					break;
 				}
@@ -255,6 +241,8 @@ private:
 				end_index += val_vector[i+1].first;
 			}
 		}
+
+		testCompression();
 		return true;
 	}
 
@@ -291,24 +279,59 @@ private:
 	T& RLECompressedColumn<T>::operator[](const int index){
 		
 		static T t;
-		int k = val_vector[0].first;
-		for(unsigned int i = 0; i < val_vector.size(); i++)
+		unsigned int i;
+		int end_index = val_vector[0].first - 1;
+		for(i = 0; i < val_vector.size() - 1; i++)
 		{  
-			if(k >= index+1)
+			if(index <= end_index)
 			{
 				return val_vector[i].second;
 			}
 			else
 			{
-				k += val_vector[i].first;
+				end_index += val_vector[i+1].first;
 			}
 		}
+		if(index <= end_index)
+		{
+			return val_vector[i].second;
+		}
+
 		return t;
 	}
 
 	template<class T>
 	unsigned int RLECompressedColumn<T>::getSizeinBytes() const throw(){
 		return 0; //return values_.capacity()*sizeof(T);
+	}
+
+	template<class T>
+	bool RLECompressedColumn<T>::testCompression(){
+		unsigned int i;
+		for( i = 0; i < val_vector.size() - 1; i++)
+		{
+			if(val_vector[i].second == val_vector[i+1].second)
+			{
+				std::cout << "Element " << val_vector[i].second << " with index " << i << " is equal to the next element" << std::endl;
+				std::cout << "Compresion test failed"  << std::endl;
+				return false;
+			}
+			if(val_vector[i].first == 0)
+			{
+				std::cout << "Counter of element " << val_vector[i].second << " with index " << i << " is 0" << std::endl;
+				std::cout << "Compresion test failed"  << std::endl;
+				return false;
+			}
+				
+		}
+		if(val_vector[i].first == 0)
+		{
+			std::cout << "Counter of the last element " << val_vector[i].second << " with index " << i << " is 0" << std::endl;
+			std::cout << "Compresion test failed"  << std::endl;
+			return false;
+		}
+		std::cout << "Compresion test - Ok"  << std::endl;
+		return true;
 	}
 
 /***************** End of Implementation Section ******************/

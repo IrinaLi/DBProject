@@ -154,21 +154,39 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	return true;
 }
 /****** irli UPDATE TEST ******/
+
 template<class T>
-bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
-	TID tid = 0;
-	T new_value = reference_data[1];
-	std::cout << "IRLI UPDATE TEST: Update value on Position '" << tid << "' to new value '" << new_value << "'..."; // << std::endl;
+bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data, TID tid, T& value) 
+{
+	std::cout << "IRLI UPDATE TEST: Update value on Position '" << tid << "' to new value '" << value << "'..." << std::endl;
 
-	reference_data[tid] = new_value;
+	reference_data[tid] = value;
 
-	col->update(tid, new_value);
+	col->update(tid, value);
 
 	if (!equals(reference_data, col)) {
 		std::cerr << "UPDATE TEST FAILED!" << std::endl;	
 		return false;
 	}
+
 	std::cout << "SUCCESS"<< std::endl;
+	return true;
+
+}
+
+template<class T>
+bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
+
+	std::cout << "test update in the first position" << std::endl;
+	test_column_update (col, reference_data, 0 , reference_data[1]);
+	std::cout << "test update in the last position" << std::endl;
+	test_column_update (col, reference_data, 99 , reference_data[98]);
+	std::cout << "test update in the middle of colomn" << std::endl;
+	test_column_update (col, reference_data, 13 , reference_data[14]);
+	std::cout << "test three neighbour" << std::endl;
+	test_column_update (col, reference_data, 55 , reference_data[54]);
+	test_column_update (col, reference_data, 57 , reference_data[55]);
+	test_column_update (col, reference_data, 56 , reference_data[55]);
 
 	return true;
 }
@@ -179,7 +197,8 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	std::vector<int> reference_data(100);
 
 	fill_column(col, reference_data);
-	return test_column_update(col, reference_data);
+   // irli	return test_column(col, reference_data);
+	return test_column_update(col, reference_data); // irli тест на обновление колонки
 }
 
 bool unittest(boost::shared_ptr<ColumnBaseTyped<float>> col) {
