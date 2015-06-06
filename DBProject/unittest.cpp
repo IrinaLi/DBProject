@@ -197,8 +197,8 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	std::vector<int> reference_data(100);
 
 	fill_column(col, reference_data);
-   // irli	return test_column(col, reference_data);
-	return test_column_update(col, reference_data); // irli тест на обновление колонки
+   	return test_column(col, reference_data);
+	// return test_column_update(col, reference_data); // irli тест на обновление колонки
 }
 
 bool unittest(boost::shared_ptr<ColumnBaseTyped<float>> col) {

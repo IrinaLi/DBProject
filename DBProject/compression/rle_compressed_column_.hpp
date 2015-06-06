@@ -138,6 +138,10 @@ private:
 		unsigned int end_index = val_vector[0].first-1;
 		for(unsigned int i = 0; i < val_vector.size(); i++)
 		{  
+			if (i != 0)
+			{
+				end_index += val_vector[i].first;
+			}
 			if(index >= start_index && index <= end_index)
 			{
 				// check if current and new value are the same
@@ -238,7 +242,6 @@ private:
 			else
 			{
 				start_index += val_vector[i].first;
-				end_index += val_vector[i+1].first;
 			}
 		}
 
@@ -252,10 +255,55 @@ private:
 	}
 	
 	template<class T>
-	bool RLECompressedColumn<T>::remove(TID){
-		return false;	
+	bool RLECompressedColumn<T>::remove(TID index){
+
+		unsigned int start_index = 0;
+		unsigned int end_index = val_vector[0].first - 1;
+		for(unsigned int i = 0; i < val_vector.size(); i++)
+		{  
+			if (i != 0)
+			{
+				end_index += val_vector[i].first;
+			}
+
+			if(index >= start_index && index <= end_index)
+			{
+				// check if compressed element contains more then one value
+				if(val_vector[i].first > 1)
+				{
+					val_vector[i].first--;
+					break;
+				}
+				// if compressed element contains one value
+				else
+				{	
+					if(i == 0)
+					{
+						val_vector.erase(val_vector.begin());
+						break;
+					}
+					if(i == val_vector.size() - 1)
+					{
+						val_vector.erase(val_vector.end() - 1);
+						break;
+					}
+					
+					if (val_vector[i-1].second == val_vector[i+1].second)
+					{
+						val_vector[i-1].first += val_vector[i+1].first;
+						val_vector.erase(val_vector.begin() + i);
+						val_vector.erase(val_vector.begin() + i);
+						break;
+					}
+					val_vector.erase(val_vector.begin() + i);
+					break;
+				}
+			}
+			start_index += val_vector[i].first;
+		}
+		return true;	
 	}
-	
+
 	template<class T>
 	bool RLECompressedColumn<T>::remove(PositionListPtr){
 		return false;			
