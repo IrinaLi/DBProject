@@ -19,7 +19,7 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<std::string> > ptr);
 
 int main(){
 	/*create an object of your implemented column, and pass the smart pointer to the unittests*/
-  // boost::shared_ptr<Column<int> > col (new Column<int>("int column",INT));
+  //irli boost::shared_ptr<Column<int> > col (new Column<int>("int column",INT));
 	boost::shared_ptr<RLECompressedColumn<int> > col (new RLECompressedColumn<int>("int column",INT));
 	if(!unittest(col)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	
@@ -27,14 +27,16 @@ int main(){
 	}
 	std::cout << "Unitests Passed!" << std::endl;
 
-   boost::shared_ptr<Column<float> > col_float (new Column<float>("float column",FLOAT));
+// irli boost::shared_ptr<Column<float> > col_float (new Column<float>("float column",FLOAT));
+   boost::shared_ptr<RLECompressedColumn<float> > col_float (new RLECompressedColumn<float>("float column",FLOAT));
 	if(!unittest(col_float)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	
 		return -1;	
 	}
 	std::cout << "Unitests Passed!" << std::endl;
 
-  boost::shared_ptr<Column<std::string> > col_string (new Column<std::string>("string column",VARCHAR));
+// irli boost::shared_ptr<Column<std::string> > col_string (new Column<std::string>("string column",VARCHAR));
+  boost::shared_ptr<RLECompressedColumn<std::string> > col_string (new RLECompressedColumn<std::string>("string column",VARCHAR));
 	//boost::shared_ptr<DictionaryCompressedColumn<std::string> > col_string (new DictionaryCompressedColumn<std::string>("compressed int column",VARCHAR));
 	if(!unittest(col_string)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	

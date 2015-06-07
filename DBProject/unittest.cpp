@@ -89,7 +89,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	//boost::shared_ptr<DictionaryCompressedColumn<int> > compressed_col (new DictionaryCompressedColumn<int>("compressed int column",INT));
 	//compressed_col->insert(reference_data.begin(),reference_data.end()); 
 
-/*irli  ColumnPtr copy = col->copy();
+	ColumnPtr copy = col->copy();
 	if(!copy) { 
 		std::cerr << std::endl << "VIRTUAL COPY CONSTRUCTOR TEST FAILED!" << std::endl;	
 		return false;
@@ -98,7 +98,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	if (!result) { 
 		std::cerr << std::endl << "VIRTUAL COPY CONSTRUCTOR TEST FAILED!" << std::endl;	
 		return false;
-	}	*/
+	}	
 	std::cout << "SUCCESS"<< std::endl;  
 	/****** UPDATE TEST ******/
 	TID tid = rand() % 100;
@@ -171,9 +171,27 @@ bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 
 	std::cout << "SUCCESS"<< std::endl;
 	return true;
-
 }
+/******IRLI DELETE TEST ******/
+template<class T>
+bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data, TID tid){
+	{
 
+		std::cout << "IRLI DELETE TEST: Delete value on Position '" << tid << "'..."; // << std::endl;
+
+		reference_data.erase(reference_data.begin()+tid);
+
+		col->remove(tid);
+
+		if (!equals(reference_data, col)) {
+			std::cerr << "IRLI DELETE TEST FAILED!" << std::endl;
+			return false;
+		}
+		std::cout << "SUCCESS"<< std::endl;
+	}
+	return true;
+}
+// irli тест на обновление колонки
 template<class T>
 bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
 
@@ -190,6 +208,18 @@ bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 
 	return true;
 }
+// irli тест на удаление элемента
+template<class T>
+bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
+
+	std::cout << "test update in the first position" << std::endl;
+	test_column_delete (col, reference_data, 0);
+	std::cout << "test update in the last position" << std::endl;
+	test_column_delete (col, reference_data, 98);
+	std::cout << "test update in the middle of colomn" << std::endl;
+	test_column_delete (col, reference_data, 66);
+	return true;
+}
 
 bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	std::cout << "RUN Unittest for Column with BaseType ColumnBaseTyped<int> >" << std::endl;
@@ -199,6 +229,7 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	fill_column(col, reference_data);
    	return test_column(col, reference_data);
 	// return test_column_update(col, reference_data); // irli тест на обновление колонки
+	//  return test_column_delete(col, reference_data); // irli тест на удаление элемента
 }
 
 bool unittest(boost::shared_ptr<ColumnBaseTyped<float>> col) {

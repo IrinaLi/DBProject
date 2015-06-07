@@ -43,8 +43,6 @@ class RLECompressedColumn : public CompressedColumn<T>{
 
 	virtual bool store(const std::string& path);
 	virtual bool load(const std::string& path);
-
-
 	
 	virtual T& operator[](const int index);
 
@@ -126,8 +124,7 @@ private:
 	}
 	template<class T>
 	const ColumnPtr RLECompressedColumn<T>::copy() const{
-
-		return ColumnPtr();
+		return ColumnPtr(new RLECompressedColumn<T>(*this));
 	}
 
 	template<class T>
@@ -245,7 +242,7 @@ private:
 			}
 		}
 
-		testCompression();
+		testCompression(); // irli compression test закомментировать в посл. версии
 		return true;
 	}
 
@@ -311,16 +308,41 @@ private:
 
 	template<class T>
 	bool RLECompressedColumn<T>::clearContent(){
-		return false;
+		val_vector.clear();
+		return true;
 	}
 
 	template<class T>
-	bool RLECompressedColumn<T>::store(const std::string&){
-		return false;
+	bool RLECompressedColumn<T>::store(const std::string& path_){
+		//string path("data/");
+		std::string path(path_);
+		path += "/";
+		path += this->name_;
+		//std::cout << "Writing Column " << this->getName() << " to File " << path << std::endl;
+		std::ofstream outfile (path.c_str(),std::ios_base::binary | std::ios_base::out);
+		boost::archive::binary_oarchive oa(outfile);
+
+		oa << val_vector;
+
+		outfile.flush();
+		outfile.close();
+		return true;
 	}
 	template<class T>
-	bool RLECompressedColumn<T>::load(const std::string&){
-		return false;
+	bool RLECompressedColumn<T>::load(const std::string& path_){
+		std::string path(path_);
+		//std::cout << "Loading column '" << this->name_ << "' from path '" << path << "'..." << std::endl;
+		//string path("data/");
+		path += "/";
+		path += this->name_;
+		
+		//std::cout << "Opening File '" << path << "'..." << std::endl;
+		std::ifstream infile (path.c_str(),std::ios_base::binary | std::ios_base::in);
+		boost::archive::binary_iarchive ia(infile);
+
+		ia >> val_vector;
+		infile.close();
+		return true;
 	}
 
 	template<class T>
@@ -350,7 +372,7 @@ private:
 
 	template<class T>
 	unsigned int RLECompressedColumn<T>::getSizeinBytes() const throw(){
-		return 0; //return values_.capacity()*sizeof(T);
+		return val_vector.capacity() * sizeof(std::pair<int,T>);
 	}
 
 	template<class T>
@@ -382,9 +404,25 @@ private:
 		return true;
 	}
 
+
+
 /***************** End of Implementation Section ******************/
 
 
 
 }; //end namespace CogaDB
+
+// namespace boost serialization
+namespace boost
+{
+	namespace serialization 
+	{
+		template<class Archive, class T>
+		void serialize(Archive & ar, std::pair<int,T> & g, const unsigned int version)
+		{
+			ar & g.first;
+			ar & g.second;
+		}
+	}
+}; //end namespace boost serialization
 
