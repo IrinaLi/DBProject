@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="compression\bit_vector_compressed_column.hpp" />
     <ClInclude Include="compression\dictionary_compressed_column.hpp" />
     <ClInclude Include="compression\rle_compressed_column_.hpp" />
     <ClInclude Include="core\base_column.hpp" />
