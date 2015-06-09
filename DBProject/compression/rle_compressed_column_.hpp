@@ -109,8 +109,15 @@ private:
 	}
 
 	template<class T>
-	void RLECompressedColumn<T>::print() const throw(){
+	void RLECompressedColumn<T>::print() const throw()
+	{
+		std::cout << "| " << this->name_ << " |" << std::endl;
+		std::cout << "________________________" << std::endl;
+		for(unsigned int i = 0;i < val_vector.size(); i++)
+		{
+			std::cout << "| " << val_vector[i].first << " |" <<  val_vector[i].second <<" |" << std::endl;
 
+		}
 	}
 	template<class T>
 	size_t RLECompressedColumn<T>::size() const throw(){

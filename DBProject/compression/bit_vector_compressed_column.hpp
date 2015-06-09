@@ -127,7 +127,17 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 
 	template<class T>
 	void BitVectorCompressedColumn<T>::print() const throw(){
-
+		std::cout << "| " << this->name_ << " |" << std::endl;
+		std::cout << "________________________" << std::endl;
+		for(unsigned int i = 0;i < val_vector.size(); i++)
+		{
+			std::cout << "| " << val_vector[i].first << " | ";
+			for (unsigned int j = 0; j < val_vector[i].second.size(); j++)
+			{
+				std::cout <<  val_vector[i].second[j];
+			}
+			std::cout << std::endl;
+		}
 	}
 	template<class T>
 	size_t BitVectorCompressedColumn<T>::size() const throw(){

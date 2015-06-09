@@ -32,6 +32,8 @@ int main(){
 	}
 	std::cout << "Unitests Passed!" << std::endl;
 
+	 col->print();
+
 // irli boost::shared_ptr<Column<float> > col_float (new Column<float>("float column",FLOAT));
 // irli   boost::shared_ptr<RLECompressedColumn<float> > col_float (new RLECompressedColumn<float>("float column",FLOAT));
 	 boost::shared_ptr<BitVectorCompressedColumn<float> > col_float (new BitVectorCompressedColumn<float>("float column",FLOAT));
