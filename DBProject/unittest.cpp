@@ -16,7 +16,8 @@ const T get_rand_value() {
 
 template<>
 const int get_rand_value() {
-	return rand() % 100;
+	 return rand() % 100;
+	// irli return rand() % 2;
 }
 
 template<>

@@ -33,7 +33,8 @@ int main(){
 	std::cout << "Unitests Passed!" << std::endl;
 
 // irli boost::shared_ptr<Column<float> > col_float (new Column<float>("float column",FLOAT));
-   boost::shared_ptr<RLECompressedColumn<float> > col_float (new RLECompressedColumn<float>("float column",FLOAT));
+// irli   boost::shared_ptr<RLECompressedColumn<float> > col_float (new RLECompressedColumn<float>("float column",FLOAT));
+	 boost::shared_ptr<BitVectorCompressedColumn<float> > col_float (new BitVectorCompressedColumn<float>("float column",FLOAT));
 	if(!unittest(col_float)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	
 		return -1;	
@@ -41,8 +42,9 @@ int main(){
 	std::cout << "Unitests Passed!" << std::endl;
 
 // irli boost::shared_ptr<Column<std::string> > col_string (new Column<std::string>("string column",VARCHAR));
-  boost::shared_ptr<RLECompressedColumn<std::string> > col_string (new RLECompressedColumn<std::string>("string column",VARCHAR));
-	//boost::shared_ptr<DictionaryCompressedColumn<std::string> > col_string (new DictionaryCompressedColumn<std::string>("compressed int column",VARCHAR));
+// irli boost::shared_ptr<DictionaryCompressedColumn<std::string> > col_string (new DictionaryCompressedColumn<std::string>("compressed int column",VARCHAR));
+// irli	  boost::shared_ptr<RLECompressedColumn<std::string> > col_string (new RLECompressedColumn<std::string>("string column",VARCHAR));
+	 boost::shared_ptr<BitVectorCompressedColumn<std::string> > col_string (new BitVectorCompressedColumn<std::string>("string column",VARCHAR));
 	if(!unittest(col_string)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	
 		return -1;	

@@ -5,6 +5,7 @@
 
 #include <algorithm> 
 #include <core/compressed_column.hpp>
+#include <boost/serialization/utility.hpp>
 
 namespace CoGaDB{
 	
@@ -131,7 +132,10 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 	template<class T>
 	size_t BitVectorCompressedColumn<T>::size() const throw(){
 		size_t n = 0;
-		n = val_vector[0].second.size();
+		if (val_vector.size() != 0)
+		{
+			n = val_vector[0].second.size();
+		}
 		return n;
 	}
 	template<class T>
@@ -213,12 +217,13 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 
 	template<class T>
 	bool BitVectorCompressedColumn<T>::clearContent(){
-		return false;
+		val_vector.clear();
+		return true;
 	}
 
 	template<class T>
-	bool BitVectorCompressedColumn<T>::store(const std::string& ){
-		/*//string path("data/");
+	bool BitVectorCompressedColumn<T>::store(const std::string& path_ ){
+//		string path("data/");
 		std::string path(path_);
 		path += "/";
 		path += this->name_;
@@ -229,12 +234,13 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 		oa << val_vector;
 
 		outfile.flush();
-		outfile.close();*/
-		return false;
+		outfile.close();
+			return true;
+		//return false;
 	}
 	template<class T>
-	bool BitVectorCompressedColumn<T>::load(const std::string& ){
-	/*			std::string path(path_);
+	bool BitVectorCompressedColumn<T>::load(const std::string& path_){
+		std::string path(path_);
 		//std::cout << "Loading column '" << this->name_ << "' from path '" << path << "'..." << std::endl;
 		//string path("data/");
 		path += "/";
@@ -245,8 +251,9 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 		boost::archive::binary_iarchive ia(infile);
 
 		ia >> val_vector;
-		infile.close();*/
-		return false;
+		infile.close();
+		return true;
+	//	return false;
 	}
 
 	template<class T>
@@ -265,7 +272,8 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 
 	template<class T>
 	unsigned int BitVectorCompressedColumn<T>::getSizeinBytes() const throw(){
-		return 0; //return values_.capacity()*sizeof(T);
+	return	val_vector.capacity() * (val_vector[0].second.capacity() * sizeof(bool) + sizeof(T));
+		//return 0; //return values_.capacity()*sizeof(T);
 	}
 
 /***************** End of Implementation Section ******************/
