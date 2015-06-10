@@ -155,6 +155,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 
 	return true;
 }
+///////////////////////////////////////////////////////////////////////////////
 /****** irli UPDATE TEST ******/
 
 template<class T>
@@ -193,6 +194,7 @@ bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 	}
 	return true;
 }
+
 // irli тест на обновление колонки
 template<class T>
 bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
@@ -222,15 +224,34 @@ bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 	test_column_delete (col, reference_data, 66);
 	return true;
 }
+template<class T>
+void print_uncompressed_column(std::vector<T>& reference_data)
+{
+		std::cout << "|  unompressed  | " << std::endl;
+		std::cout << "________________________" << std::endl;
+		for(unsigned int i = 0; i < reference_data.size(); i++)
+		{
+			std::cout << "| " << reference_data [i] << "| ";
 
+		}
+		std::cout << std::endl;
+		int size = reference_data.size() * sizeof(T);
+		std::cout <<"size of uncompressed column in Bytes " << size << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	std::cout << "RUN Unittest for Column with BaseType ColumnBaseTyped<int> >" << std::endl;
 	
 	std::vector<int> reference_data(100);
 
 	fill_column(col, reference_data);
+
+	// irli print_uncompressed_column (reference_data); // irli печатать нескомпримированную коллонку
+
    	return test_column(col, reference_data);
-	// return test_column_update(col, reference_data); // irli тест на обновление колонки
+	
+	// return test_column_update(col, reference_data); // irli print uncomprimierte colu
 	//  return test_column_delete(col, reference_data); // irli тест на удаление элемента
 }
 

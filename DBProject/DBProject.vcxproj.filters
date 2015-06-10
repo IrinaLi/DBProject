@@ -45,6 +45,9 @@
     <ClInclude Include="compression\bit_vector_compressed_column.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="compression\dict_cpmpressed_column.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\int column" />

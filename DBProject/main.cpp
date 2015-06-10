@@ -9,7 +9,7 @@
 #include <compression/dictionary_compressed_column.hpp>
 #include <compression/rle_compressed_column_.hpp>
 #include <compression/bit_vector_compressed_column.hpp>
-
+#include <compression/dict_cpmpressed_column.hpp>
 
 using namespace CoGaDB;
 
@@ -22,9 +22,9 @@ int main(){
 
 	/*create an object of your implemented column, and pass the smart pointer to the unittests*/
 
-  //irli boost::shared_ptr<Column<int> > col (new Column<int>("int column",INT));
- // irli boost::shared_ptr<RLECompressedColumn<int> > col (new RLECompressedColumn<int>("int column",INT));
-	 boost::shared_ptr<BitVectorCompressedColumn<int> > col (new BitVectorCompressedColumn<int>("int column",INT));
+	//irli boost::shared_ptr<Column<int> > col (new Column<int>("int column",INT));
+	// irli	boost::shared_ptr<RLECompressedColumn<int> > col (new RLECompressedColumn<int>("int column",INT));
+ 	 boost::shared_ptr<BitVectorCompressedColumn<int> > col (new BitVectorCompressedColumn<int>("int column",INT));
 
 	if(!unittest(col)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	
@@ -32,10 +32,10 @@ int main(){
 	}
 	std::cout << "Unitests Passed!" << std::endl;
 
-	 col->print();
+	// irli col->print(); // irli печатать скомпримированную колонку
 
-// irli boost::shared_ptr<Column<float> > col_float (new Column<float>("float column",FLOAT));
-// irli   boost::shared_ptr<RLECompressedColumn<float> > col_float (new RLECompressedColumn<float>("float column",FLOAT));
+	// irli boost::shared_ptr<Column<float> > col_float (new Column<float>("float column",FLOAT));
+	// irli   boost::shared_ptr<RLECompressedColumn<float> > col_float (new RLECompressedColumn<float>("float column",FLOAT));
 	 boost::shared_ptr<BitVectorCompressedColumn<float> > col_float (new BitVectorCompressedColumn<float>("float column",FLOAT));
 	if(!unittest(col_float)){
 		std::cout << "At least one Unittest Failed!" << std::endl;	
@@ -43,8 +43,7 @@ int main(){
 	}
 	std::cout << "Unitests Passed!" << std::endl;
 
-// irli boost::shared_ptr<Column<std::string> > col_string (new Column<std::string>("string column",VARCHAR));
-// irli boost::shared_ptr<DictionaryCompressedColumn<std::string> > col_string (new DictionaryCompressedColumn<std::string>("compressed int column",VARCHAR));
+// irli boost::shared_ptr<Column<std::string> > col_string (new Column<std::string>("string column",VARCHAR));;
 // irli	  boost::shared_ptr<RLECompressedColumn<std::string> > col_string (new RLECompressedColumn<std::string>("string column",VARCHAR));
 	 boost::shared_ptr<BitVectorCompressedColumn<std::string> > col_string (new BitVectorCompressedColumn<std::string>("string column",VARCHAR));
 	if(!unittest(col_string)){
