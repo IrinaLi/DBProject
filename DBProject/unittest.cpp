@@ -16,8 +16,8 @@ const T get_rand_value() {
 
 template<>
 const int get_rand_value() {
-	 return rand() % 100;
-	// irli return rand() % 2;
+	 //return rand() % 100;
+	return rand() % 4;
 	 // irli return rand() % 1000;
 }
 
@@ -28,12 +28,14 @@ const float get_rand_value() {
 
 template<>
 const std::string get_rand_value() {
-	std::string characterfield="abcdefghijklmnopqrstuvwxyz";
+	// std::string characterfield="abcdefghijklmnopqrstuvwxyz";
+	std::string characterfield="a";
 
 	std::string s;
 	for(unsigned int i=0;i<10;i++){
 		s.push_back( characterfield[rand() % characterfield.size()]);
 	}
+	std::cout << "String is: " << s << std::endl; // todo del test
 	return s;
 }
 
@@ -76,7 +78,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		std::cout << "Fatal Error! In Unittest: invalid data size" << std::endl;
 		return false;
 	}
-
+	
+	 col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "BASIC INSERT TEST FAILED!" << std::endl;
 		return false;

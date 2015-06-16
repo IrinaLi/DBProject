@@ -43,11 +43,13 @@ class DictionaryCompressedColumn : public CompressedColumn<T>{
 
 	virtual bool store(const std::string& path);
 	virtual bool load(const std::string& path);
-
-
+	
 	
 	virtual T& operator[](const int index);
-
+	
+private:
+	std::vector< std::pair<int,T> > dictionary_vector; // holds references of specific data
+	std::vector< int > compressed_vector; // val_vector
 };
 
 
@@ -66,13 +68,46 @@ class DictionaryCompressedColumn : public CompressedColumn<T>{
 
 	template<class T>
 	bool DictionaryCompressedColumn<T>::insert(const boost::any&){
-
 		return false;
 	}
 
+	// todo 
 	template<class T>
-	bool DictionaryCompressedColumn<T>::insert(const T&){
-		return false;
+	bool DictionaryCompressedColumn<T>::insert(const T& new_value){
+
+		// if empty check dictionary and insert new type
+		if(compressed_vector.empty()){
+			dictionary_vector.push_back(std::make_pair(0, new_value)); // zero based counter (?)
+			compressed_vector.push_back(0);
+		} 
+		else
+		{
+			bool found = false;
+			unsigned int i = 0;
+			for ( i ; i < dictionary_vector.size(); i++)
+			{
+				if(dictionary_vector[i].second  == new_value) // already stored in dictionary return index
+				{		
+					compressed_vector.push_back(dictionary_vector[i].first); // push reference key at the end of the vector
+					found = true;
+				}
+			
+			}
+			/**
+			* if no element was found in dictionary
+			* insert into dirctionary and return new reference key of new entry
+			* reference key is vector_size-1
+			**/ 
+			if(!found)
+			{
+				dictionary_vector.push_back(std::make_pair(i, new_value)); // on the end insert
+				unsigned int extend_index = dictionary_vector[i].first; // get index
+				compressed_vector.push_back(extend_index);
+			}
+		}
+
+
+		return true;
 	}
 
 	template <typename T> 
@@ -88,21 +123,41 @@ class DictionaryCompressedColumn : public CompressedColumn<T>{
 		return boost::any();
 	}
 
+	// todo
 	template<class T>
 	void DictionaryCompressedColumn<T>::print() const throw(){
-
+		std::cout << "| " << this->name_ << " |" << std::endl;
+		std::cout << "________________________" << std::endl;
+		
+		unsigned int dict_index  = 0;
+		
+		for(unsigned int i = 0;i < compressed_vector.size(); i++)
+		{
+			dict_index = compressed_vector[i]; // todo direct access to dct vector also possible?
+			for(unsigned int j = 0; j< dictionary_vector.size(); j++)
+			{
+				if(dictionary_vector[j].first == dict_index ){
+					T dict_element = dictionary_vector[j].second;
+					std::cout << i << ": " << dict_index << "| " << dict_element  << std::endl;
+					break;
+				}
+			}
+		}	
 	}
+
+	// todo
 	template<class T>
 	size_t DictionaryCompressedColumn<T>::size() const throw(){
-
-		return 0;
+		return compressed_vector.size(); 
 	}
+
+	// todo
 	template<class T>
-	const ColumnPtr DictionaryCompressedColumn<T>::copy() const{
-
-		return ColumnPtr();
+	const ColumnPtr DictionaryCompressedColumn<T>::copy() const{		
+		return ColumnPtr(new DictionaryCompressedColumn<T>(*this));
 	}
 
+	// todo
 	template<class T>
 	bool DictionaryCompressedColumn<T>::update(TID , const boost::any& ){
 		return false;
@@ -113,6 +168,7 @@ class DictionaryCompressedColumn : public CompressedColumn<T>{
 		return false;		
 	}
 	
+	// todo
 	template<class T>
 	bool DictionaryCompressedColumn<T>::remove(TID){
 		return false;	
@@ -123,34 +179,80 @@ class DictionaryCompressedColumn : public CompressedColumn<T>{
 		return false;			
 	}
 
+	// todo
 	template<class T>
 	bool DictionaryCompressedColumn<T>::clearContent(){
+		// compressed_vector.clear();
 		return false;
 	}
 
+
+	// todo
 	template<class T>
-	bool DictionaryCompressedColumn<T>::store(const std::string&){
-		return false;
+	bool DictionaryCompressedColumn<T>::store(const std::string& path_){
+		//string path("data/");
+		std::string path(path_);
+		path += "/";
+		path += this->name_;
+		//std::cout << "Writing Column " << this->getName() << " to File " << path << std::endl;
+		std::ofstream outfile (path.c_str(),std::ios_base::binary | std::ios_base::out);
+		boost::archive::binary_oarchive oa(outfile);
+
+		oa << compressed_vector;
+
+		outfile.flush();
+		outfile.close();
+		return true;
 	}
+
+	// todo
 	template<class T>
-	bool DictionaryCompressedColumn<T>::load(const std::string&){
+	bool DictionaryCompressedColumn<T>::load(const std::string& path_){
+		std::string path(path_);
+		//std::cout << "Loading column '" << this->name_ << "' from path '" << path << "'..." << std::endl;
+		//string path("data/");
+		path += "/";
+		path += this->name_;
+		
+		//std::cout << "Opening File '" << path << "'..." << std::endl;
+		std::ifstream infile (path.c_str(),std::ios_base::binary | std::ios_base::in);
+		boost::archive::binary_iarchive ia(infile);
+
+		ia >> compressed_vector;
+		infile.close(); 
 		return false;
 	}
 
+	// todo
 	template<class T>
-	T& DictionaryCompressedColumn<T>::operator[](const int){
-		static T t;
+	T& DictionaryCompressedColumn<T>::operator[](const int index){		
+		static T t;		
+
+		unsigned int dict_index  = 0;
+		
+		for(unsigned int i = 0;i < compressed_vector.size(); i++)
+		{
+			dict_index = compressed_vector[i]; // todo direct access to dct vector also possible?
+			for(unsigned int j = 0; j< dictionary_vector.size(); j++)
+			{
+				if(dictionary_vector[j].first == dict_index ){					
+					t = dictionary_vector[j].second;
+					break;
+				}
+			}
+		}	
+
 		return t;
 	}
 
+	// todo
 	template<class T>
 	unsigned int DictionaryCompressedColumn<T>::getSizeinBytes() const throw(){
-		return 0; //return values_.capacity()*sizeof(T);
+		// old: return 0; //return values_.capacity()*sizeof(T);
+		return compressed_vector.capacity() * sizeof(int);
 	}
-
+	
 /***************** End of Implementation Section ******************/
-
-
 
 }; //end namespace CogaDB
 
