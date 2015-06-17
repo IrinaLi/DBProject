@@ -228,18 +228,26 @@ private:
 	T& DictionaryCompressedColumn<T>::operator[](const int index){		
 		static T t;		
 
-		unsigned int dict_index  = 0;
-		
+		unsigned int dict_key  = 0;
+
 		for(unsigned int i = 0;i < compressed_vector.size(); i++)
 		{
-			dict_index = compressed_vector[i]; // todo direct access to dct vector also possible?
-			for(unsigned int j = 0; j< dictionary_vector.size(); j++)
-			{
-				if(dictionary_vector[j].first == dict_index ){					
-					t = dictionary_vector[j].second;
-					break;
+			// if index found 
+			if(i == index ){			
+				// get index in reference key
+				dict_key = compressed_vector[i];
+				for(unsigned int j = 0; j< dictionary_vector.size(); j++)
+				{
+					// check reference key in dictionary
+					if(dictionary_vector[j].first == dict_key ){					
+						t = dictionary_vector[j].second;
+						break;
+					}
 				}
+			
+				break;
 			}
+			
 		}	
 
 		return t;
