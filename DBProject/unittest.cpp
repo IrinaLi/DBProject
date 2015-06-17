@@ -26,8 +26,7 @@ const float get_rand_value() {
 
 template<>
 const std::string get_rand_value() {
-	// std::string characterfield="abcdefghijklmnopqrstuvwxyz";
-	std::string characterfield="ab";
+	std::string characterfield="abcdefghijklmnopqrstuvwxyz";
 
 	std::string s;
 	for(unsigned int i=0;i<10;i++){
@@ -76,7 +75,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		return false;
 	}
 	
-	col->print(); /// todo to delete
+	//col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "BASIC INSERT TEST FAILED!" << std::endl;
 		return false;
@@ -111,7 +110,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 
 	col->update(tid, new_value);
 	
-	col->print(); /// todo to delete
+	//col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "UPDATE TEST FAILED!" << std::endl;	
 		return false;
@@ -127,7 +126,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 
 		col->remove(tid);
 		
-		col->print(); /// todo to delete
+		//col->print(); /// todo to delete
 		if (!equals(reference_data, col)) {
 			std::cerr << "DELETE TEST FAILED!" << std::endl;
 			return false;

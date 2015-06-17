@@ -346,7 +346,11 @@ private:
 	template<class T>
 	unsigned int DictionaryCompressedColumn<T>::getSizeinBytes() const throw(){
 		// old: return 0; //return values_.capacity()*sizeof(T);
-		return compressed_vector.capacity() * sizeof(int);
+
+		int size_dictionary = dictionary_vector.capacity() * sizeof(std::pair<int,T>);
+		int size_compression =  compressed_vector.capacity() * sizeof(int);
+
+		return	size_compression + size_dictionary;
 	}
 	
 /***************** End of Implementation Section ******************/
