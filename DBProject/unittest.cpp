@@ -27,13 +27,12 @@ const float get_rand_value() {
 template<>
 const std::string get_rand_value() {
 	// std::string characterfield="abcdefghijklmnopqrstuvwxyz";
-	std::string characterfield="a";
+	std::string characterfield="ab";
 
 	std::string s;
 	for(unsigned int i=0;i<10;i++){
 		s.push_back( characterfield[rand() % characterfield.size()]);
 	}
-	std::cout << "String is: " << s << std::endl; // todo del test
 	return s;
 }
 

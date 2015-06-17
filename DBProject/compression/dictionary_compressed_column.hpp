@@ -167,16 +167,10 @@ private:
 		int key_counts = 0;
 		bool found_key = false;
 		/// replace i with index !!
-
+		
+		unsigned int key = 0;
 		// update
-		for (unsigned int i = 0; i < compressed_vector.size(); i++)
-		{
-			if(i == index)
-			{
-				old_dict_key = compressed_vector[i];
-				break;
-			}
-		}
+		old_dict_key  = compressed_vector[index];
 
 		// check if more than one value represented in dictionary
 		for (unsigned int i = 0; i < compressed_vector.size(); i++)
@@ -209,9 +203,9 @@ private:
 
 		if(!found_key)
 		{
-			unsigned int i = dictionary_vector.size();
-			dictionary_vector.push_back(std::make_pair(i, value)); // on the end insert
-			compressed_vector[index] = dictionary_vector[i].first;
+			unsigned int new_index = dictionary_vector.back().first +1 ;
+			dictionary_vector.push_back(std::make_pair(new_index, value)); // on the end insert
+			compressed_vector[index] = new_index;
 		}
 		else
 		{
@@ -325,7 +319,7 @@ private:
 
 		unsigned int dict_key  = 0;
 
-		for(unsigned int i = 0;i < compressed_vector.size(); i++)
+		for(unsigned int i = 0; i < compressed_vector.size(); i++)
 		{
 			// if index found 
 			if(i == index ){			
