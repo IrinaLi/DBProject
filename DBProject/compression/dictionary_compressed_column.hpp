@@ -77,7 +77,7 @@ private:
 
 		// if empty check dictionary and insert new type
 		if(compressed_vector.empty()){
-			dictionary_vector.push_back(std::make_pair(0, new_value)); // zero based counter (?)
+			dictionary_vector.push_back(std::make_pair(0, new_value)); // zero based counter
 			compressed_vector.push_back(0);
 		} 
 		else
@@ -133,7 +133,7 @@ private:
 		
 		for(unsigned int i = 0;i < compressed_vector.size(); i++)
 		{
-			dict_index = compressed_vector[i]; // todo direct access to dct vector also possible?
+			dict_index = compressed_vector[i]; 
 			for(unsigned int j = 0; j< dictionary_vector.size(); j++)
 			{
 				if(dictionary_vector[j].first == dict_index ){
