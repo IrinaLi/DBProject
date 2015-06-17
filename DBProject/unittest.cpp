@@ -16,14 +16,12 @@ const T get_rand_value() {
 
 template<>
 const int get_rand_value() {
-	 //return rand() % 100;
-	return rand() % 4;
-	 // irli return rand() % 1000;
+	return rand() % 100; // right values
 }
 
 template<>
 const float get_rand_value() {
-	return float(rand() % 10000) / 100;
+	return float(rand() % 10000) / 100; // right values
 }
 
 template<>
@@ -79,7 +77,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		return false;
 	}
 	
-	 col->print(); /// todo to delete
+	col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "BASIC INSERT TEST FAILED!" << std::endl;
 		return false;
@@ -113,7 +111,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	reference_data[tid] = new_value;
 
 	col->update(tid, new_value);
-
+	
+	col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "UPDATE TEST FAILED!" << std::endl;	
 		return false;
@@ -128,7 +127,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		reference_data.erase(reference_data.begin()+tid);
 
 		col->remove(tid);
-
+		
+		col->print(); /// todo to delete
 		if (!equals(reference_data, col)) {
 			std::cerr << "DELETE TEST FAILED!" << std::endl;
 			return false;

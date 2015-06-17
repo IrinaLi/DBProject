@@ -24,7 +24,7 @@ int main(){
 
 	// boost::shared_ptr<Column<int> > col (new Column<int>("int column",INT)); // irli 
 	// boost::shared_ptr<RLECompressedColumn<int> > col (new RLECompressedColumn<int>("int column",INT)); // irli 
-	boost::shared_ptr<DictionaryCompressedColumn<int> > col (new DictionaryCompressedColumn<int>("int column",INT)); // irli 
+	// boost::shared_ptr<DictionaryCompressedColumn<int> > col (new DictionaryCompressedColumn<int>("int column",INT)); // irli 
 	// boost::shared_ptr<BitVectorCompressedColumn<int> > col (new BitVectorCompressedColumn<int>("int column",INT)); // irli 
 
 	if(!unittest(col)){

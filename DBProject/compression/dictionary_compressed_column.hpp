@@ -159,8 +159,67 @@ private:
 
 	// todo
 	template<class T>
-	bool DictionaryCompressedColumn<T>::update(TID , const boost::any& ){
-		return false;
+	bool DictionaryCompressedColumn<T>::update(TID index, const boost::any& new_value){		
+		T value = boost::any_cast<T>(new_value);
+
+		unsigned int old_dict_key = 0;
+		unsigned int new_dict_key = 0;
+		int key_counts = 0;
+		bool found_key = false;
+		/// replace i with index !!
+
+		// update
+		for (unsigned int i = 0; i < compressed_vector.size(); i++)
+		{
+			if(i == index)
+			{
+				old_dict_key = compressed_vector[i];
+				break;
+			}
+		}
+
+		// check if more than one value represented in dictionary
+		for (unsigned int i = 0; i < compressed_vector.size(); i++)
+		{
+			if(old_dict_key == compressed_vector[i])
+			{
+				key_counts++;
+			}
+		}
+
+		for (unsigned int i = 0; i < dictionary_vector.size(); i++)
+		{
+			if(key_counts == 1)
+			{
+				// delete old dictionary key if it is not used
+				if(old_dict_key == dictionary_vector[i].first)
+				{
+					// should be just one specific value in dictionary
+					dictionary_vector.erase(dictionary_vector.begin() + i);
+				}				
+			}
+
+			if(value == dictionary_vector[i].second)
+			{
+				new_dict_key = dictionary_vector[i].first;
+				found_key = true;
+			}
+		}
+
+
+		if(!found_key)
+		{
+			unsigned int i = dictionary_vector.size();
+			dictionary_vector.push_back(std::make_pair(i, value)); // on the end insert
+			compressed_vector[index] = dictionary_vector[i].first;
+		}
+		else
+		{
+			// update column in compressed vector
+			compressed_vector[index] = new_dict_key;
+		}
+
+		return true;
 	}
 
 	template<class T>
@@ -170,8 +229,44 @@ private:
 	
 	// todo
 	template<class T>
-	bool DictionaryCompressedColumn<T>::remove(TID){
-		return false;	
+	bool DictionaryCompressedColumn<T>::remove(TID index){
+		unsigned int dict_key = 0;
+		int key_counts = 0;
+
+		// delete in compressed vector at specific index
+		for (unsigned int i = 0; i < compressed_vector.size(); i++)
+		{
+			if(i == index)
+			{
+				dict_key = compressed_vector[i];
+				compressed_vector.erase(compressed_vector.begin() + i);
+				break;
+			}
+		}
+		
+		// check if more than one value represented in dictionary
+		for (unsigned int i = 0; i < compressed_vector.size(); i++)
+		{
+			if(dict_key == compressed_vector[i])
+			{
+				key_counts++;
+			}
+		}
+
+		// index already deleted, no other entry with value found: delete also in dictionary
+		if(key_counts == 0)
+		{
+			for (unsigned int i = 0; i < dictionary_vector.size(); i++)
+			{
+				if(dict_key == dictionary_vector[i].first)
+				{
+					dictionary_vector.erase(dictionary_vector.begin() + i);
+					break;
+				}
+			}
+		}
+
+		return true;	
 	}
 	
 	template<class T>
@@ -182,8 +277,8 @@ private:
 	// todo
 	template<class T>
 	bool DictionaryCompressedColumn<T>::clearContent(){
-		// compressed_vector.clear();
-		return false;
+		compressed_vector.clear();
+		return true;
 	}
 
 
