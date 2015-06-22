@@ -74,7 +74,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		std::cout << "Fatal Error! In Unittest: invalid data size" << std::endl;
 		return false;
 	}
-	
+
+	//col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "BASIC INSERT TEST FAILED!" << std::endl;
 		return false;
@@ -112,8 +113,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	reference_data[tid] = new_value;
 
 	col->update(tid, new_value);
-	
-	
+
+	//col->print(); /// todo to delete
 	if (!equals(reference_data, col)) {
 		std::cerr << "UPDATE TEST FAILED!" << std::endl;	
 		return false;
@@ -130,7 +131,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		reference_data.erase(reference_data.begin()+tid);
 
 		col->remove(tid);
-		
+
 		//col->print(); /// todo to delete
 		if (!equals(reference_data, col)) {
 			std::cerr << "DELETE TEST FAILED!" << std::endl;
@@ -260,7 +261,7 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	// print_uncompressed_column(reference_data); // print uncompressed int column for testing
     // col->print(); // print compressed int column for testing
 
-  	return test_column(col, reference_data);
+   	return test_column(col, reference_data);
 	//  return test_column_update(col, reference_data); 
 	//  return test_column_delete(col, reference_data); 
 }
