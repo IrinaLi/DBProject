@@ -127,17 +127,19 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 
 	template<class T>
 	void BitVectorCompressedColumn<T>::print() const throw(){
-		std::cout << "| " << this->name_ << " |" << std::endl;
-		std::cout << "________________________" << std::endl;
+		std::cout << "| "<<"compressed " << this->name_ << " |" << std::endl;
+		//std::cout << "________________________" << std::endl;
 		for(unsigned int i = 0;i < val_vector.size(); i++)
 		{
 			std::cout << "| " << val_vector[i].first << " | ";
 			for (unsigned int j = 0; j < val_vector[i].second.size(); j++)
 			{
-				std::cout <<  val_vector[i].second[j];
+				std::cout << val_vector[i].second[j];
 			}
 			std::cout << std::endl;
 		}
+		std::cout << "size of compressed column in Bytes: " << getSizeinBytes() << std::endl;
+		std::cout << std::endl;
 	}
 	template<class T>
 	size_t BitVectorCompressedColumn<T>::size() const throw(){
@@ -161,13 +163,13 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 
 		for(unsigned int j = 0; j < val_vector.size(); j++)
 		{
-			if(val_vector[j].second[index] == true)	// находим значение, в компр. массиве, бит вектор которого нужно изменить
+			if(val_vector[j].second[index] == true)	// find value in compressed vector, which should be changed 
 			{
 				val_vector[j].second[index] = false;
-				// смотрим в бит векторе есть ли здесь другие элементы (другие true)
+				// check if bit vector has another elements (true values) 
 				std::vector<bool>::iterator it;
 				it = std::find(val_vector[j].second.begin() , val_vector[j].second.end(), true);
-				if (it == val_vector[j].second.end()) // если не нашли другой элемент
+				if (it == val_vector[j].second.end()) // if another element was not found 
 				{
 					val_vector.erase(val_vector.begin() + j);
 				}
@@ -176,14 +178,14 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 	
 		for(unsigned int i = 0; i < val_vector.size(); i++)
 		{
-			if (val_vector[i].first == value) // если новое значение совпадает с одним из значений в скомпримированном векторе
+			if (val_vector[i].first == value) // if new value is equal to some value in compressed vector 
 			{
 				val_vector[i].second[index] = true;
 				flag = true;
 				break;
 			}
 		}
-		if (flag == false) // если новое значение не совпадает ни с одним из скомпримированного вектора
+		if (flag == false) // if new value isn't equal to some value in compressed vector 
 		{
 			bit_vector.resize(val_vector[0].second.size(), false);
 			bit_vector[index] = true;
@@ -201,16 +203,16 @@ class BitVectorCompressedColumn : public CompressedColumn<T>{
 	bool BitVectorCompressedColumn<T>::remove(TID index){
 		for(unsigned int j = 0; j < val_vector.size(); j++)
 		{
-			if(val_vector[j].second[index] == true)	// находим значение, в компр. массиве, бит вектор которого нужно изменить
+			if(val_vector[j].second[index] == true)	// find value in compressed vector, whose bit-vector should be changed
 			{
 				for(unsigned int i = 0; i < val_vector.size(); i++)
 				{
 					val_vector[i].second.erase(val_vector[i].second.begin() + index);
 				}
-				// смотрим в бит векторе есть ли здесь другие элементы (другие true)
+				// check if bit vector has another elements (true values)
 				std::vector<bool>::iterator it;
 				it = std::find(val_vector[j].second.begin() , val_vector[j].second.end(), true);
-				if (it == val_vector[j].second.end()) // если не нашли другой элемент
+				if (it == val_vector[j].second.end()) // if another element was not found 
 				{
 					val_vector.erase(val_vector.begin() + j);
 				}

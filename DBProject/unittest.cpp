@@ -16,9 +16,7 @@ const T get_rand_value() {
 
 template<>
 const int get_rand_value() {
-	 return rand() % 100;
-	// irli return rand() % 2;
-	 // irli return rand() % 1000;
+	return rand() % 100;
 }
 
 template<>
@@ -76,7 +74,7 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		std::cout << "Fatal Error! In Unittest: invalid data size" << std::endl;
 		return false;
 	}
-
+	
 	if (!equals(reference_data, col)) {
 		std::cerr << "BASIC INSERT TEST FAILED!" << std::endl;
 		return false;
@@ -85,6 +83,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	std::cout << std::endl;
 
 	std::cout << "SUCCESS" << std::endl;
+
+
 	/****** VIRTUAL COPY CONSTRUCTOR TEST ******/
 	std::cout << "VIRTUAL COPY CONSTRUCTOR TEST...";
 
@@ -102,6 +102,8 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		return false;
 	}	
 	std::cout << "SUCCESS"<< std::endl;  
+
+
 	/****** UPDATE TEST ******/
 	TID tid = rand() % 100;
 	T new_value = get_rand_value<T>();
@@ -110,12 +112,15 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 	reference_data[tid] = new_value;
 
 	col->update(tid, new_value);
-
+	
+	
 	if (!equals(reference_data, col)) {
 		std::cerr << "UPDATE TEST FAILED!" << std::endl;	
 		return false;
 	}
 	std::cout << "SUCCESS"<< std::endl;
+
+
 	/****** DELETE TEST ******/
 	{
 		TID tid = rand() % 100;
@@ -125,13 +130,15 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 		reference_data.erase(reference_data.begin()+tid);
 
 		col->remove(tid);
-
+		
+		//col->print(); /// todo to delete
 		if (!equals(reference_data, col)) {
 			std::cerr << "DELETE TEST FAILED!" << std::endl;
 			return false;
 		}
 		std::cout << "SUCCESS"<< std::endl;
 	}
+
 	/****** STORE AND LOAD TEST ******/
 	{
 		std::cout << "STORE AND LOAD TEST: store column data on disc and load it..."; // << std::endl;
@@ -155,13 +162,12 @@ bool test_column(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& refe
 
 	return true;
 }
-///////////////////////////////////////////////////////////////////////////////
-/****** irli UPDATE TEST ******/
+/****** CUSTOM UPDATE TEST ******/
 
 template<class T>
 bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data, TID tid, T& value) 
 {
-	std::cout << "IRLI UPDATE TEST: Update value on Position '" << tid << "' to new value '" << value << "'..." << std::endl;
+	std::cout << "CUSTOM UPDATE TEST: Update value on Position '" << tid << "' to new value '" << value << "'..." << std::endl;
 
 	reference_data[tid] = value;
 
@@ -175,19 +181,19 @@ bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 	std::cout << "SUCCESS"<< std::endl;
 	return true;
 }
-/******IRLI DELETE TEST ******/
+/******CUSTOM DELETE TEST ******/
 template<class T>
 bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data, TID tid){
 	{
 
-		std::cout << "IRLI DELETE TEST: Delete value on Position '" << tid << "'..."; // << std::endl;
+		std::cout << "CUSTOM DELETE TEST: Delete value on Position '" << tid << "'..."; // << std::endl;
 
 		reference_data.erase(reference_data.begin()+tid);
 
 		col->remove(tid);
 
 		if (!equals(reference_data, col)) {
-			std::cerr << "IRLI DELETE TEST FAILED!" << std::endl;
+			std::cerr << "CUSTOM DELETE TEST FAILED!" << std::endl;
 			return false;
 		}
 		std::cout << "SUCCESS"<< std::endl;
@@ -195,7 +201,7 @@ bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 	return true;
 }
 
-// irli тест на обновление колонки
+// additional update test
 template<class T>
 bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
 
@@ -212,7 +218,8 @@ bool test_column_update(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 
 	return true;
 }
-// irli тест на удаление элемента
+
+// additional delete test
 template<class T>
 bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T>& reference_data) {
 
@@ -224,22 +231,25 @@ bool test_column_delete(boost::shared_ptr<ColumnBaseTyped<T>> col, std::vector<T
 	test_column_delete (col, reference_data, 66);
 	return true;
 }
+
+/* print uncompressed culomn */
 template<class T>
 void print_uncompressed_column(std::vector<T>& reference_data)
 {
-		std::cout << "|  unompressed  | " << std::endl;
-		std::cout << "________________________" << std::endl;
+		std::cout << std::endl;
+		std::cout << "| unompressed column | " << std::endl;
 		for(unsigned int i = 0; i < reference_data.size(); i++)
 		{
-			std::cout << "| " << reference_data [i] << "| ";
+
+			std::cout <<" "<<"["<< i <<"]-"<< reference_data [i] << " ";
 
 		}
 		std::cout << std::endl;
 		int size = reference_data.size() * sizeof(T);
 		std::cout <<"size of uncompressed column in Bytes " << size << std::endl;
+		std::cout << std::endl;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 	std::cout << "RUN Unittest for Column with BaseType ColumnBaseTyped<int> >" << std::endl;
 	
@@ -247,12 +257,12 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<int>> col) {
 
 	fill_column(col, reference_data);
 
-	// irli print_uncompressed_column (reference_data); // irli печатать нескомпримированную коллонку
+	// print_uncompressed_column(reference_data); // print uncompressed int column for testing
+    // col->print(); // print compressed int column for testing
 
-   	return test_column(col, reference_data);
-	
-	// return test_column_update(col, reference_data); // irli print uncomprimierte colu
-	//  return test_column_delete(col, reference_data); // irli тест на удаление элемента
+  	return test_column(col, reference_data);
+	//  return test_column_update(col, reference_data); 
+	//  return test_column_delete(col, reference_data); 
 }
 
 bool unittest(boost::shared_ptr<ColumnBaseTyped<float>> col) {
@@ -261,6 +271,10 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<float>> col) {
 	std::vector<float> reference_data(100);
 
 	fill_column(col, reference_data);
+
+	// print_uncompressed_column(reference_data); // print uncompressed  column for testing
+	// col->print(); // print compressed column for testing
+
 	return test_column(col, reference_data);
 }
 
@@ -270,5 +284,9 @@ bool unittest(boost::shared_ptr<ColumnBaseTyped<std::string>> col) {
 	std::vector<std::string> reference_data(100);
 
 	fill_column(col, reference_data);
+
+	// print_uncompressed_column(reference_data); // print uncompressed  column for testing
+	// col->print(); // print compressed column for testing
+
 	return test_column(col, reference_data);
 }

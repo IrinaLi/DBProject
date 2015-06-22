@@ -188,7 +188,7 @@ private:
 					{
 						val_vector[i-1].first += val_vector[i+1].first + 1;
 						val_vector.erase(val_vector.begin() + i);
-						val_vector.erase(val_vector.begin() + i); //irli потому что поменяются значения индексов после первого удаления
+						val_vector.erase(val_vector.begin() + i); 
 						break;
 					}
 
@@ -249,7 +249,7 @@ private:
 			}
 		}
 
-		testCompression(); // irli compression test закомментировать в посл. версии
+		// testCompression();
 		return true;
 	}
 
